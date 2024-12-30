@@ -1,0 +1,264 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #001f3f, #011627);
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+#gameCanvas {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: url('assets/background/Nebula Blue.png') repeat-y center center;
+    background-size: cover;
+    animation: scrollBackground 10s linear infinite;
+}
+
+@keyframes scrollBackground {
+    from {
+        background-position-y: 0;
+    }
+    to {
+        background-position-y: 100%;
+    }
+}
+
+/* Base player style */
+#player {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background: url('assets/ships/ship_1.png') no-repeat center;
+    background-size: contain;
+    z-index: 5; /* Ensure it stays above other elements */
+}
+
+/* Translucent orb around the player for power-ups */
+#player.power-up-active {
+    position: relative;
+    z-index: 5;
+}
+
+/* Speed Boost: Cyan Glow */
+#player.speed-boost-active::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: rgba(0, 255, 255, 0.3); /* Cyan translucent orb */
+    box-shadow: 0 0 20px cyan, 0 0 40px rgba(0, 255, 255, 0.7); /* Glowing effect */
+    pointer-events: none; /* Ensure this effect doesn't block interactions */
+    z-index: -1; /* Behind the player */
+}
+
+/* Triple Shot: Yellow Glow */
+#player.triple-shot-active::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: rgba(255, 255, 0, 0.3); /* Yellow translucent orb */
+    box-shadow: 0 0 20px yellow, 0 0 40px rgba(255, 255, 0.7); /* Glowing effect */
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Shield: Green Glow */
+#player.shield-active::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: rgba(0, 255, 0, 0.3); /* Green translucent orb */
+    box-shadow: 0 0 20px lime, 0 0 40px rgba(0, 255, 0, 0.7); /* Glowing effect */
+    pointer-events: none;
+    z-index: -1;
+}
+
+.enemy {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background-size: contain;
+    transform: scaleX(-1); /* Flip horizontally for enemies */
+}
+
+#bossHealthBar {
+    position: absolute;
+    top: 40px; /* Move it below the player's health bar */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid green;
+    border-radius: 5px;
+    display: none; /* Hide when no boss is active */
+    z-index: 10;
+}
+
+#bossHealth {
+    height: 100%;
+    background: green;
+    width: 100%;
+}
+
+
+.projectile {
+    position: absolute;
+    width: 5px;
+    height: 20px;
+    background: yellow;
+    border-radius: 3px;
+}
+
+.enemy-projectile {
+    position: absolute;
+    width: 5px;
+    height: 15px;
+    background: red;
+    border-radius: 3px;
+}
+
+/* Base styling for all power-ups */
+.power-up {
+    position: absolute;
+    width: 64px; /* Adjust size for a glowing effect */
+    height: 64px;
+    border-radius: 50%; /* Make it circular */
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0)); /* Translucent center fading out */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3); /* Glow effect */
+    animation: float 1.5s infinite alternate ease-in-out; /* Floating animation for a dynamic look */
+}
+
+/* Floating animation */
+@keyframes float {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+/* Speed Boost: Cyan Glow */
+.power-up.speed-boost {
+    box-shadow: 0 0 20px cyan, 0 0 40px rgba(0, 255, 255, 0.7);
+}
+
+/* Triple Shot: Yellow Glow */
+.power-up.triple-shot {
+    box-shadow: 0 0 20px yellow, 0 0 40px rgba(255, 255, 0, 0.7);
+}
+
+/* Shield: Green Glow */
+.power-up.shield {
+    box-shadow: 0 0 20px lime, 0 0 40px rgba(0, 255, 0, 0.7);
+}
+
+
+#scoreBoard {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    font-size: 18px;
+}
+
+#healthBar {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 20px;
+    background: rgba(255, 0, 0, 0.3);
+    border: 2px solid red;
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+#health {
+    width: 100%;
+    height: 100%;
+    background: green;
+}
+
+.explosion {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, orange, red, transparent);
+    border-radius: 50%;
+    animation: explode 0.5s ease-out;
+    pointer-events: none; /* So it doesn’t interfere with gameplay */
+    z-index: 15;
+}
+
+@keyframes explode {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+#player.shielded {
+    box-shadow: 0 0 15px 5px cyan;
+}
+
+#wave-announcement {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 36px;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 20;
+}
+
+#cheatMenu {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+
+#cheatMenu.visible {
+    display: block;
+    opacity: 1;
+}
+
+
+#cheatMenu button {
+    display: block;
+    margin: 5px 0;
+}
+
+
+#cheatMenu button:hover {
+    background: #666;
+}
